@@ -15,14 +15,10 @@ $ python unigrade.py
 Utvidelser:
 -a               : Legge til ny karakter
 -p <path>        : Se hvordan snittet vil se ut dersom en legger til karakterene definert i denne filen.
-
+```
 
 NB! Ved å definere en shebang øverst i koden (satt til env python3 her), markere den som executable og
-legge til dir i path skal man kunne kjøre den uten å ha "python" foran, samt filendelsen ".py".
-
-Eksempel på kjøring:
-$ unigrade -a
-```
+legge til dir i path skal man kunne kjøre den uten å ha "python" foran, samt filendelsen ".py". [[StackOverflow](https://stackoverflow.com/questions/27494758/how-do-i-make-a-python-script-executable/27494871)]
 
 ---
 
@@ -60,7 +56,7 @@ Eksempel2,A,5
 Eksempel4,B,10
 ```
 
-Og ved å utføre kommandoen `unigrade -p <path>` vil disse legges til i utregningen, men ikke legges inn i oversikten over karakterer du har fått til nå. Dersom du vurderer ta opp en eksamen kan du ved å definere det samme navnet i denne listen se hvilken forskjell en annen karakter gjør på snittet ditt.
+Og ved å utføre kommandoen `unigrade -p <path>` vil disse legges til i utregningen, men ikke legges inn i oversikten over karakterer du har fått til nå. Dersom du vurderer ta opp en eksamen kan du ved å definere det samme navnet i denne listen se hvilken forskjell en annen karakter utgjør på snittet ditt.
 
 ```
 $ unigrade -p "/Desktop/predict.csv"
@@ -74,7 +70,7 @@ Eksempel4  B               10
 Your weighted average grade is 4.60, with a total of 30 credits.
 ```
 
-En eksempelfil kalt predict.csv ligger ved, det er viktig at header-linjen er den samme som i grades.csv.
+Eksempelfilen kalt predict.csv kan tas i bruk for å legge til forutsette karakterer, det er viktig at header-linjen er den samme som i grades.csv.
 
 ---
 
