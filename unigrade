@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+import pandas as pd
+from tabulate import tabulate
+from argh import ArghParser, arg, dispatch_command
+from dataclasses import dataclass
+import os
+from csv import writer
+
+FILEPATH = os.path.join(os.path.dirname(__file__), "./grades.csv")
+accepted_grades = ['A', 'B', 'C', 'D', 'E', 'Pass']
+format_of_CSV = """The file needs to have the following format:
+
+Subject,Grade,Credits
+ExampleSubjectGradePass,Pass,5
+ExampleSubjectGradeA,A,10
+
+In which the grades have to be element of the subset {A,B,C,D,E,Pass}
+and the credits have to be a number of type integer"""
+
+
+@dataclass
+class GradeInformation:
+    score: str
+    credits: int
+
+
+@dataclass
+class Subject:
+    name: str
+    info: GradeInformation
+
+    def __init__(self, name: str, score: str, credits: int):
+        try:
+            assert any(score.lower() == accepted_grade.lower() for accepted_grade in accepted_grades), "The grade is not accepted"
+            credits = int(credits)
+        except AssertionError as grade_error:
+            print(grade_error)
+            exit()
+        except:
+            print("The credits have to be of type integer")
+            exit()
+        self.name = name
+        self.info = GradeInformation(score, credits)
+
+
+def write_to_subject_csv(subject: Subject):
+    with open(FILEPATH, 'a+') as file:
+        csv_writer = writer(file)
+        csv_writer.writerow(
+            [subject.name, subject.info.score.capitalize(), subject.info.credits])
+
+
+def read_subject_dict(path):
+    try:
+        subject_dict = dict()
+        with open(path) as file:
+            list = file.readlines()[1:]
+            for line in list:
+                if line.strip():  # If line is not empty
+                    subject, score, credits = line.strip().split(',')
+                    subject_dict[subject] = GradeInformation(score, credits)
+        return subject_dict
+    except ValueError:
+        print("The file containing grades is empty")
+
+
+def calulate_score(predict=None):
+    score_dict = read_subject_dict(FILEPATH)
+    if predict is not None:
+        prediction_dict = read_subject_dict(predict)
+        score_dict = {**score_dict, **prediction_dict}
+    try:
+        letter_to_number_score = {
+            'A': 5,
+            'B': 4,
+            'C': 3,
+            'D': 2,
+            'E': 1
+        }
+        sum_of_credits = 0
+        sum_of_credits_x_score = 0
+        sum_of_credits_from_passed_subjects = 0
+        for key in score_dict:
+            score = score_dict.get(key).score
+            if score == 'Pass':
+                sum_of_credits_from_passed_subjects += int(score_dict.get(key).credits)
+                continue
+            score = letter_to_number_score[score]
+            credits = int(score_dict.get(key).credits)
+            sum_of_credits += credits
+            sum_of_credits_x_score += (credits*score)
+        return '{:.2f}'.format(sum_of_credits_x_score / sum_of_credits), sum_of_credits+sum_of_credits_from_passed_subjects
+    except ZeroDivisionError:
+        print("You have to insert a grade!")
+        exit()  # May not be the best solution?
+
+
+def do_append():
+    """Appends a new subject to the list of grades"""
+    try:
+        write_to_subject_csv(Subject(name=input("Name: "), score=input(
+            "Score: "), credits=input("Credits: ")))
+    except AssertionError as format_error:
+        print(format_error)
+
+
+def do_show(dataframe=pd.read_csv(FILEPATH), table=True, predict_path=None):
+    """Shows a table of your grades, and your weighted average."""
+    if table:
+        print(tabulate(dataframe.to_numpy(), headers=["Subject", "Grade", "Credits"]))
+    score, credits = calulate_score(predict=predict_path)
+    print("\n" + f"Your weighted average grade is {score}, with a total of {credits} credits.")
+
+
+def do_predict(predict_path: str):
+    try:
+        assert predict_path.split(".")[-1].lower() == "csv", "The file needs to be of format csv"
+        with open(predict_path) as file:
+            header = file.readline()
+            assert header.strip() == 'Subject,Grade,Credits', format_of_CSV
+        li_of_df = []
+        li_of_df.append(pd.read_csv(FILEPATH, index_col=None))
+        li_of_df.append(pd.read_csv(predict_path, header=0, index_col=None))
+        dataframe = pd.concat(li_of_df, axis=0, ignore_index=True).drop_duplicates(subset='Subject', keep="last")
+        do_show(dataframe=dataframe, table=True, predict_path=predict_path)
+    except AssertionError as format_error:
+        print(format_error)
+        exit()
+    except FileNotFoundError as file_error:
+        print("No such file or directory")
+        exit()
+
+
+def main(append: "append a new grade" = False, predict: "predict grade with assumed grades given the right path" = None):
+    """Shows a table of your grades, and your weighted average"""
+    if append:
+        do_append()
+    elif predict is not None:
+        do_predict(predict)
+    else:
+        do_show()
+
+
+if __name__ == "__main__":
+    dispatch_command(main)
