@@ -1,3 +1,5 @@
+![Illustrasjonsbilde av karakterkalkulatoren](https://firebasestorage.googleapis.com/v0/b/portfoliobymartinnilsen.appspot.com/o/Projects%2Funigrade.png?alt=media&token=fe7f2a12-8e05-446f-8071-6b9a8f2445f6)
+
 # KarakterKalkulator
 
 Dette er et kommandolinjeverktøy utviklet med Python, med den hensikt å kunne registrere universitets- og høgskolekarakterer som bygger på A-E systemet, og regne ut det vektede snittet [1-5] basert på studiepoeng og karakter i hvert fag.
