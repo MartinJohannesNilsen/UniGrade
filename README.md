@@ -1,6 +1,6 @@
 # KarakterKalkulator
 
-Dette er et kommandolinjeverktøy utviklet med Python, med den hensikt å kunne registrere universitets- og høgskolekarakterer som bygger på A-F systemet, og regne ut det vektede snittet [1-5] basert på studiepoeng og karakter i hvert fag.
+Dette er et kommandolinjeverktøy utviklet med Python, med den hensikt å kunne registrere universitets- og høgskolekarakterer som bygger på A-E systemet, og regne ut det vektede snittet [1-5] basert på studiepoeng og karakter i hvert fag.
 
 ---
 
