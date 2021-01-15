@@ -1,4 +1,6 @@
-![Illustrasjonsbilde av karakterkalkulatoren](https://firebasestorage.googleapis.com/v0/b/portfoliobymartinnilsen.appspot.com/o/Projects%2Funigrade.png?alt=media&token=fe7f2a12-8e05-446f-8071-6b9a8f2445f6)
+<img src="https://firebasestorage.googleapis.com/v0/b/portfoliobymartinnilsen.appspot.com/o/Projects%2Funigrade.png?alt=media&token=fe7f2a12-8e05-446f-8071-6b9a8f2445f6" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="300" height="300" />
+
+![Illustrasjonsbilde av karakterkalkulatoren]()
 
 # KarakterKalkulator
 
