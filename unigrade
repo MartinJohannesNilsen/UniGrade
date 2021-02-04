@@ -20,7 +20,7 @@ and the credits have to be a number of type integer"""
 
 @dataclass
 class GradeInformation:
-    score: str
+    grade: str
     credits: int
 
 
@@ -29,9 +29,9 @@ class Subject:
     name: str
     info: GradeInformation
 
-    def __init__(self, name: str, score: str, credits: int):
+    def __init__(self, name: str, grade: str, credits: int):
         try:
-            assert any(score.lower() == accepted_grade.lower() for accepted_grade in accepted_grades), "The grade is not accepted"
+            assert any(grade.lower() == accepted_grade.lower() for accepted_grade in accepted_grades), "The grade is not accepted"
             credits = int(credits)
         except AssertionError as grade_error:
             print(grade_error)
@@ -40,14 +40,14 @@ class Subject:
             print("The credits have to be of type integer")
             exit()
         self.name = name
-        self.info = GradeInformation(score, credits)
+        self.info = GradeInformation(grade, credits)
 
 
 def write_to_subject_csv(subject: Subject):
     with open(FILEPATH, 'a+') as file:
         csv_writer = writer(file)
         csv_writer.writerow(
-            [subject.name, subject.info.score.capitalize(), subject.info.credits])
+            [subject.name, subject.info.grade.capitalize(), subject.info.credits])
 
 
 def read_subject_dict(path):
@@ -57,20 +57,20 @@ def read_subject_dict(path):
             list = file.readlines()[1:]
             for line in list:
                 if line.strip():  # If line is not empty
-                    subject, score, credits = line.strip().split(',')
-                    subject_dict[subject] = GradeInformation(score, credits)
+                    subject, grade, credits = line.strip().split(',')
+                    subject_dict[subject] = GradeInformation(grade, credits)
         return subject_dict
     except ValueError:
         print("The file containing grades is empty")
 
 
-def calulate_score(predict=None):
-    score_dict = read_subject_dict(FILEPATH)
+def calulate_grade(predict=None):
+    grade_dict = read_subject_dict(FILEPATH)
     if predict is not None:
         prediction_dict = read_subject_dict(predict)
-        score_dict = {**score_dict, **prediction_dict}
+        grade_dict = {**grade_dict, **prediction_dict}
     try:
-        letter_to_number_score = {
+        letter_to_number_grade = {
             'A': 5,
             'B': 4,
             'C': 3,
@@ -78,18 +78,18 @@ def calulate_score(predict=None):
             'E': 1
         }
         sum_of_credits = 0
-        sum_of_credits_x_score = 0
+        sum_of_credits_x_grade = 0
         sum_of_credits_from_passed_subjects = 0
-        for key in score_dict:
-            score = score_dict.get(key).score
-            if score.capitalize() == 'Pass':
-                sum_of_credits_from_passed_subjects += int(score_dict.get(key).credits)
+        for key in grade_dict:
+            grade = grade_dict.get(key).grade
+            if grade.capitalize() == 'Pass':
+                sum_of_credits_from_passed_subjects += int(grade_dict.get(key).credits)
                 continue
-            score = letter_to_number_score[score]
-            credits = int(score_dict.get(key).credits)
+            grade = letter_to_number_grade[grade]
+            credits = int(grade_dict.get(key).credits)
             sum_of_credits += credits
-            sum_of_credits_x_score += (credits * score)
-        return '{:.2f}'.format(sum_of_credits_x_score / sum_of_credits), sum_of_credits + sum_of_credits_from_passed_subjects
+            sum_of_credits_x_grade += (credits * grade)
+        return '{:.2f}'.format(sum_of_credits_x_grade / sum_of_credits), sum_of_credits + sum_of_credits_from_passed_subjects
     except ZeroDivisionError:
         print("You have to insert a grade!")
         exit()  # May not be the best solution?
@@ -98,8 +98,8 @@ def calulate_score(predict=None):
 def do_append():
     """Appends a new subject to the list of grades"""
     try:
-        write_to_subject_csv(Subject(name=input("Name: "), score=input(
-            "Score: "), credits=input("Credits: ")))
+        write_to_subject_csv(Subject(name=input("Subject: "), grade=input(
+            "Grade: "), credits=input("Credits: ")))
     except AssertionError as format_error:
         print(format_error)
 
@@ -108,8 +108,8 @@ def do_show(dataframe=pd.read_csv(FILEPATH), table=True, predict_path=None):
     """Shows a table of your grades, and your weighted average."""
     if table:
         print(tabulate(dataframe.to_numpy(), headers=["Subject", "Grade", "Credits"]))
-    score, credits = calulate_score(predict=predict_path)
-    print("\n" + f"Your weighted average grade is {score}, with a total of {credits} credits.")
+    grade, credits = calulate_grade(predict=predict_path)
+    print("\n" + f"Your weighted average grade is {grade}, with a total of {credits} credits.")
 
 
 def do_predict(predict_path: str):
