@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import pandas as pd
 from tabulate import tabulate
-from argh import ArghParser, arg, dispatch_command
+from argh import dispatch_command
 from dataclasses import dataclass
 import os
 from csv import writer
