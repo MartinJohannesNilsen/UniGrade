@@ -82,14 +82,14 @@ def calulate_score(predict=None):
         sum_of_credits_from_passed_subjects = 0
         for key in score_dict:
             score = score_dict.get(key).score
-            if score == 'Pass':
+            if score.capitalize() == 'Pass':
                 sum_of_credits_from_passed_subjects += int(score_dict.get(key).credits)
                 continue
             score = letter_to_number_score[score]
             credits = int(score_dict.get(key).credits)
             sum_of_credits += credits
-            sum_of_credits_x_score += (credits*score)
-        return '{:.2f}'.format(sum_of_credits_x_score / sum_of_credits), sum_of_credits+sum_of_credits_from_passed_subjects
+            sum_of_credits_x_score += (credits * score)
+        return '{:.2f}'.format(sum_of_credits_x_score / sum_of_credits), sum_of_credits + sum_of_credits_from_passed_subjects
     except ZeroDivisionError:
         print("You have to insert a grade!")
         exit()  # May not be the best solution?
