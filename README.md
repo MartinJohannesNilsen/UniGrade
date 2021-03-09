@@ -6,6 +6,16 @@ Dette er et kommandolinjeverktøy utviklet med Python, med den hensikt å kunne 
 
 ---
 
+## Oppsett
+
+Du kan laste ned prosjektet som zip-fil eller klone prosjektet. En må ha python3 installert, samt anbefales pip for å installere de pakkene en må ha for å kjøre koden. 
+
+Med pip kan du kjøre:
+
+`pip install -r requirements.txt` 
+
+i terminalen og den fikser avhengighetene for deg. 
+
 ## Kjøre koden
 
 Dette prosjektet tar i bruk pakken `argh`, som gjør det mulig å definere ulike parametere i terminalkommandoen for kjøring.
@@ -20,7 +30,7 @@ Utvidelser:
 ```
 
 NB! Ved å definere en shebang øverst i koden (satt til env python3 her), markere den som executable og
-legge til dir i path skal man kunne kjøre den uten å ha "python" foran, samt filendelsen ".py". [[StackOverflow](https://stackoverflow.com/questions/27494758/how-do-i-make-a-python-script-executable/27494871)]
+legge til dir i path skal man kunne kjøre den uten å ha "python" foran, samt filendelsen ".py". [[StackOverflow](https://stackoverflow.com/questions/27494758/how-do-i-make-a-python-script-executable/27494871)]. Om du ikke ønsker gjøre dette slenger du på filendelsen på filen unigrade (`unigrade.py`) før du kjører den.
 
 ---
 
