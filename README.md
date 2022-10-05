@@ -16,6 +16,8 @@ Med pip kan du kjøre:
 
 i terminalen og den fikser avhengighetene for deg. 
 
+---
+
 ## Kjøre koden
 
 Dette prosjektet tar i bruk pakken `argh`, som gjør det mulig å definere ulike parametere i terminalkommandoen for kjøring.
