@@ -90,7 +90,7 @@ def calulate_grade(predict=None):
             credits = float(grade_dict.get(key).credits)
             sum_of_credits += credits
             sum_of_credits_x_grade += (credits * grade)
-        return '{:.2f}'.format(sum_of_credits_x_grade / sum_of_credits), sum_of_credits + sum_of_credits_from_passed_subjects
+        return round(sum_of_credits_x_grade / sum_of_credits, 2), sum_of_credits + sum_of_credits_from_passed_subjects
     except ZeroDivisionError:
         print("You have to insert a grade!")
         exit(1)
@@ -110,8 +110,8 @@ def do_show(dataframe=pd.read_csv(FILEPATH), table=True, predict_path=None):
     if table:
         print(tabulate(dataframe.to_numpy(), headers=["Subject", "Grade", "Credits"]))
     grade, credits = calulate_grade(predict=predict_path)
-    if credits % 1 == 0:
-        credits = int(credits)
+    grade = int(grade) if grade % 1 == 0 else grade  # Convert to int if no decimals
+    credits = int(credits) if credits % 1 == 0 else credits  # Convert int float if no decimals
     print("\n" + f"Your weighted average grade is {grade}, with a total of {credits} credits.")
 
 
@@ -134,13 +134,72 @@ def do_predict(predict_path: str):
         exit(1)
 
 
+# Function to translate numerical grade to letter grade
+def numerical_to_ects_grade(numerical_grade):
+    # Dictionary mapping ECTS grades to their numerical ranges
+    grade_definitions = {
+        'A': (5, 5),
+        'A-': (4.5, 4.9999999999),
+        'B+': (4, 4.4999999999),
+        'B': (4, 4),
+        'B-': (3.5, 3.9999999999),
+        'C+': (3, 3.4999999999),
+        'C': (3, 3),
+        'C-': (2.5, 2.9999999999),
+        'D+': (2, 2.4999999999),
+        'D': (2, 2),
+        'D-': (1.5, 1.9999999999),
+        'E+': (1, 1.4999999999),
+        'E': (1, 1),
+        # Lower than E is fail in ECTS
+    }
+
+    # Iterate through the grade definitions to find where the value falls
+    for grade, (lower_bound, upper_bound) in grade_definitions.items():
+        if lower_bound <= numerical_grade <= upper_bound:
+            return grade
+    return "Incorrect grade" if numerical_grade > 5 or numerical_grade < 0 else "Fail"
+
+
+def do_info():
+    """ Show information."""
+    print("""ECTS grades are in the range from 1-5, E to A, where A is 5.00, E is 1.00 and F is below 1.""")
+
+
+def do_stats(dataframe=pd.read_csv(FILEPATH), predict_path=None):
+    """Show statistics."""
+
+    # Get stats
+    grade, credits = calulate_grade(predict=predict_path)
+    grade = int(grade) if grade % 1 == 0 else grade  # Convert to int if no decimals
+    credits = int(credits) if credits % 1 == 0 else credits  # Convert int float if no decimals
+    grouped_grades = "\n - ".join(f"{grade}: {count}" for grade, count in dataframe["Grade"].value_counts().sort_index().items())
+    percentage = grade / 0.05
+
+    # Print
+    print("Stats")
+    print("-"*20)
+    print("Average numerical grade (ECTS): ", grade)
+    print("Equivalent letter grade (ECTS): ", numerical_to_ects_grade(grade))
+    print("Overall percentage:", str(percentage) + "%")
+    print("Total credits: ", credits)
+    print("Grouped grades: ", "\n -", grouped_grades)
+    print("-"*20)
+
+
 @click.command()
 @click.option('-a', '--append', is_flag=True, help='Append a new grade.')
 @click.option('-p', '--predict', help='Predict grade with path to predict.csv.')
-def main(append: bool, predict: str):
+@click.option('-s', '--stats', is_flag=True, help='Show stats.')
+@click.option('-i', '--info', is_flag=True, help='Show information.')
+def main(append: bool, predict: str, stats: bool, info: bool):
     """A command line interface for displaying and keeping track of your grades and weighted average."""
     if append:
         do_append()
+    elif stats:
+        do_stats()
+    elif info:
+        do_info()
     elif predict is not None:
         do_predict(predict)
     else:
